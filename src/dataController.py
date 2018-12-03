@@ -75,15 +75,14 @@ class Data(object):
         return dataFiltred
 
     def writeData(self, animalsList):
-        data = self.connectData(self.dataOutPath, 'w')
-        if data != 'ERROR':
-            for animal in animalsList:
-                data.write(animal)
+        try:
+            with open(self.dataOutPath, 'w') as data:
+                for animal in animalsList.animals:
+                    data.write(animal)
                 print('Archivo escrito')
-            else:
-                print('ERROR al escribir el archivo')
-        else:
-            print('ERROR en el metodo writeData')
+        except IOError as error:
+            print('Algo salio mal')
+            print(error)
 
     def strToBool(self, value):
         if value == 'True':
