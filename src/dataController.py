@@ -25,14 +25,14 @@ class Data(object):
         self.dataOutPath = self.generatePath(self.dataOutName)
 
     def generatePath(self, dataName: str):
-        return os.path.join(RUTA_BASE, 'data', dataName)
+        return os.path.join('data', dataName)
 
     def connectData(self, dataPath, mode):
         try:
             with open(dataPath, mode) as data:
                 return data.readlines()
         except IOError as error:
-            print('Algo salio mal')
+            print('Error al Recuperar la informacion')
             print(error)
             return 'ERROR'
 
@@ -44,30 +44,33 @@ class Data(object):
 
             if param != None and value != None:
 
-                if param == 'type':
+                if param == 'id':
                     col = 0
-                elif param == 'domestic':
+                elif param == 'type':
                     col = 1
-                elif param == 'age':
+                elif param == 'domestic':
                     col = 2
-                elif param == 'gender':
+                elif param == 'age':
                     col = 3
-                elif param == 'attitude':
+                elif param == 'gender':
                     col = 4
-                elif param == 'castrated':
+                elif param == 'attitude':
                     col = 5
+                elif param == 'castrated':
+                    col = 6
 
                 for row in rows:
                     rowDat = row.split('\n')
                     rowDat = rowDat[0].split(',')
                     # print(rowDat)
+                    # print(col)
                     if rowDat[col] == value:
-                        if rowDat[1] == 'True':
-                            animal = DomesticAnimal(
-                                rowDat[0], self.strToBool(rowDat[1]), int(rowDat[2]), rowDat[3], rowDat[4], self.strToBool(rowDat[5]), rowDat[6], rowDat[7], self.strToBool(rowDat[8]))
+                        if rowDat[2] == 'True':
+                            animal = DomesticAnimal(int(rowDat[0]), rowDat[1], self.strToBool(rowDat[2]), int(
+                                rowDat[3]), rowDat[4], rowDat[5], self.strToBool(rowDat[6]), rowDat[7], rowDat[8], self.strToBool(rowDat[9]))
                         else:
-                            animal = StreetAnimal(
-                                rowDat[0], self.strToBool(rowDat[1]), int(rowDat[2]), rowDat[3], rowDat[4], self.strToBool(rowDat[5]), rowDat[6], rowDat[7])
+                            animal = StreetAnimal(int(rowDat[0]), rowDat[1], self.strToBool(rowDat[2]), int(
+                                rowDat[3]), rowDat[4], rowDat[5], self.strToBool(rowDat[6]), rowDat[7], rowDat[8])
                         # print(animal)
                         dataFiltred.append(animal)
         else:
@@ -77,8 +80,8 @@ class Data(object):
     def writeData(self, animalsList):
         try:
             with open(self.dataOutPath, 'w') as data:
-                for animal in animalsList.animals:
-                    data.write(animal)
+                for animal in animalsList:
+                    data.write('{}\n'.format(animal))
                 print('Archivo escrito')
         except IOError as error:
             print('Algo salio mal')

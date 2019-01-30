@@ -3,7 +3,7 @@
 # Scoowy - Juan Gahona
 
 from abc import ABC, ABCMeta, abstractmethod
-from tkinter import CENTER, E, Entry, Message, N, S, StringVar, Toplevel, W
+from tkinter import CENTER, RIGHT, E, Entry, Message, N, S, StringVar, Toplevel, W, BROWSE
 from tkinter.ttk import Button, Combobox, Entry, Label, LabelFrame, Style, Treeview
 
 
@@ -21,18 +21,21 @@ class V_Main(object):
         self.textReport = StringVar()
         self.textReport.set('Genera un reporte')
         self.animalsList = Treeview(
-            self.root, height=15, columns=('domestic', 'gender'))
+            self.root, height=15, columns=('type','domestic', 'gender'), selectmode=BROWSE)
         self.reportBox = Message(self.root, width=250,
                                  textvariable=self.textReport)
 
         # TreeView de los animales
-        self.animalsList.heading('#0', text='Tipo', anchor=CENTER)
+        self.animalsList.heading('#0', text='ID', anchor=CENTER)
         self.animalsList.column('#0', width=100, minwidth=100)
+        self.animalsList.heading('type', text='Tipo', anchor=CENTER)
+        self.animalsList.column('type', width=100, minwidth=100)
         self.animalsList.heading('domestic', text='Domestico', anchor=CENTER)
         self.animalsList.column('domestic', width=100, minwidth=100)
         self.animalsList.heading('gender', text='Genero', anchor=CENTER)
         self.animalsList.column('gender', width=60, minwidth=60)
         self.animalsList.grid(row=1, column=1, columnspan=3)
+        self.animalsList.bind("<Double-1>", self.onDoubleClick)
 
         # Entry ReportBox
         self.reportBox.grid(row=1, column=5, rowspan=15,
@@ -43,6 +46,11 @@ class V_Main(object):
 
     def generateReport(self):
         self.controller.getReport()
+    
+    def onDoubleClick(self, event):
+        animal = self.animalsList.selection()[0]
+        valores = self.animalsList.item(animal, "values")
+        print('Doble click: {}'.format(valores[0]))
 
 
 class WindowNewAnimal(ABC, Toplevel):
@@ -54,6 +62,8 @@ class WindowNewAnimal(ABC, Toplevel):
         self.resizable(width=resizable, height=resizable)
         self.setGeometry(ancho, alto)
         self.estilos = Style()
+        # Variables
+        self.aviso = StringVar()
         # Elementos Gui
         self.frameGui = LabelFrame(self, text=titulo)
         self.entryType = Combobox(self.frameGui, state='readonly')
@@ -64,6 +74,8 @@ class WindowNewAnimal(ABC, Toplevel):
         self.entryCastrated = Combobox(self.frameGui, state='readonly')
         self.btnAceptar = Button(
             self.frameGui, text='Aceptar', command=self.addAnimal)
+
+        self.labelAviso = Label(self.frameGui, textvariable=self.aviso, justify=RIGHT, foreground='red')
         self.setGui()
 
     def setGeometry(self, ancho, alto):
@@ -122,8 +134,10 @@ class WindowNewDomesticAnimal(WindowNewAnimal):
         Label(self.frameGui, text='Vacunas: ').grid(row=5, column=0)
         self.entryVaccinations['values'] = ['True', 'False']
         self.entryVaccinations.grid(row=5, column=1)
+        # Label Aviso
+        self.labelAviso.grid(row=6, column = 0, columnspan=4, sticky=W+E)
         # Button Aceptar
-        self.btnAceptar.grid(row=6, column=0, columnspan=4, sticky=W+E)
+        self.btnAceptar.grid(row=7, column=0, columnspan=4, sticky=W+E)
 
     def addAnimal(self):
         self.controller.addAnimal(True)
@@ -145,8 +159,10 @@ class WindowNewStreetAnimal(WindowNewAnimal):
         # Combo OwnerName
         Label(self.frameGui, text='Responsable: ').grid(row=4, column=2)
         self.entryFindingName.grid(row=4, column=3, sticky=W+E)
+        # Label Aviso
+        self.labelAviso.grid(row=5, column = 0, columnspan=4, sticky=W+E)
         # Button Aceptar
-        self.btnAceptar.grid(row=5, column=0, columnspan=4, sticky=W+E)
+        self.btnAceptar.grid(row=6, column=0, columnspan=4, sticky=W+E)
 
     def addAnimal(self):
         self.controller.addAnimal(False)
