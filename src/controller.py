@@ -29,9 +29,11 @@ class C_Main(object):
         self.lastId = self.maxId()
 
     def maxId(self):
+        """Metodo que devuelve el mayor de los ID's de las 2 listas"""
         return max(self.domesticAnimalList.lastId, self.streetAnimalList.lastId)
 
     def reloadListFull(self):
+        """Metodo que unifica las dos listas en una sola"""
         listFull = []
         for listAnimals in self.animalsList:
             for animal in listAnimals.animals:
@@ -40,6 +42,7 @@ class C_Main(object):
         return listFull
 
     def bubbleSort(self, lista):
+        """Metodo de ordenamiento tipo Burbuja"""
         for i in range(len(lista)-1, 0, -1):
             for j in range(i):
                 if lista[j].id > lista[j+1].id:
@@ -48,7 +51,10 @@ class C_Main(object):
                     lista[j+1] = temp
 
     def getAnimals(self, asc=True):
-        """Metodo que actualiza el TreeView"""
+        """Metodo que actualiza el TreeView
+        por defecto lo presenta en forma ascendente
+        Si se le pasa de argumento False lo presentara
+        de forma descendente"""
         tree = self.root.animalsList
         records = tree.get_children()
         for record in records:
@@ -56,23 +62,29 @@ class C_Main(object):
             # tree.
 
         if asc:
-
+            # Se recorre la lista del final al principio
             for i in range(len(self.animalsListFull)-1, -1, -1):
                 # print(animal.type)
                 tree.insert('', 0, text=self.animalsListFull[i].id, values=[
                             self.animalsListFull[i].type, self.animalsListFull[i].domestic, self.animalsListFull[i].gender])
         else:
+            # Se recorre la lista de forma normal
             for animal in self.animalsListFull:
                 # print(animal.type)
                 tree.insert('', 0, text=animal.id, values=[
                             animal.type, animal.domestic, animal.gender])
 
     def addAnimal(self, domestic: bool):
+        """Metodo encargado de añadir un nuevo animal domestico determina
+        a que grupo de animales perteece"""
+
+        # Segun el tipo se accede alguna de las dos ventanas de formulario
         if domestic:
             ventana = self.windowDomestic
         else:
             ventana = self.windowStreet
 
+        # Se obtienen los datos
         dataType = ventana.entryType.get()
         dataDomestic = ventana.entryDomestic.get()
         dataAge = ventana.entryAge.get()
@@ -80,6 +92,7 @@ class C_Main(object):
         dataAttitude = ventana.entryAttitude.get()
         dataCastrated = ventana.entryCastrated.get()
 
+        # Comprobamos si todos los campos etan completos
         if dataType == '' or dataDomestic == '' or dataAge == '' or dataGender == '' or dataAttitude == '' or dataCastrated == '':
             self.alert('Llene todos los campos', ventana)
         else:
@@ -91,6 +104,8 @@ class C_Main(object):
                 self.alert(
                     'Edad incorrecta, escriba un valor numerico entero', ventana)
 
+            # Si los datos son correctos los convertimos a un objeto animal
+            # de alguno de los dos grupos
             if correcto:
                 if domestic:
                     dataResidentialArea = ventana.entryResidentialArea.get().upper()
@@ -120,11 +135,16 @@ class C_Main(object):
                         self.lastId += 1
                         print('Add nuevo Callejero')
 
+                # Recargamos la lista completa de animales
                 self.animalsListFull = self.reloadListFull()
+                # Actualizamos el TreeView
                 self.getAnimals()
+                # Escribimos los nuevos datos en el archivo CSV
                 self.data.writeData(self.animalsListFull)
 
     def getReport(self):
+        """MEtodo que nos muestra un reporte general basico de todos,
+        los animales ingresados"""
         numTotals = [0, 0, 0]
         numTotals[0] = len(self.domesticAnimalList.animals)
         numTotals[1] = len(self.streetAnimalList.animals)
@@ -160,13 +180,17 @@ class C_Main(object):
         # print(reporte)
         self.root.textReport.set(reporte)
 
-        # print(self.animalsListFull)
+        # Escribimos los resultados en el archivo CSV
         self.data.writeData(self.animalsListFull)
 
     def alert(self, mensaje: str, ventana: Toplevel):
+        """Metodo que actualiza el Label del aviso,
+        ventana - Ventana a la cual pertenece el Label"""
         ventana.aviso.set(mensaje)
 
     def clearForm(self, ventana: Toplevel, domestic: bool):
+        """Metodo encargado de resetear o dejar en blanco todo
+        el formulario"""
         if domestic:
             ventana.entryResidentialArea.delete(0, END)
             ventana.entryOwnerName.delete(0, END)

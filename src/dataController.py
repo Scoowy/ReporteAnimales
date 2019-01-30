@@ -10,7 +10,8 @@ from src.model import DomesticAnimal, StreetAnimal
 
 
 class Data(object):
-    """Clase encargada de gestionar la recuperacion y escritura de datos en los registros de texto"""
+    """Clase encargada de gestionar la recuperacion y escritura de datos en
+     los registros de texto"""
 
     def __init__(self, dataInName: str, separator: str, dataOutName=''):
         self.dataInName = dataInName
@@ -37,6 +38,7 @@ class Data(object):
             return 'ERROR'
 
     def getData(self, param=None, value=None):
+        """Metodo que obtiene los datos desde el archivo CSV y los almacena como objetos Animal de cada tipo"""
         dataFiltred = []
         if self.data != 'ERROR':
             rows = self.data
@@ -67,10 +69,16 @@ class Data(object):
                     if rowDat[col] == value:
                         if rowDat[2] == 'True':
                             animal = DomesticAnimal(int(rowDat[0]), rowDat[1], self.strToBool(rowDat[2]), int(
-                                rowDat[3]), rowDat[4], rowDat[5], self.strToBool(rowDat[6]), rowDat[7], rowDat[8], self.strToBool(rowDat[9]))
+                                rowDat[3]), rowDat[4], rowDat[5],
+                                self.strToBool(rowDat[6]), rowDat[7],
+                                rowDat[8], self.strToBool(rowDat[9]))
                         else:
-                            animal = StreetAnimal(int(rowDat[0]), rowDat[1], self.strToBool(rowDat[2]), int(
-                                rowDat[3]), rowDat[4], rowDat[5], self.strToBool(rowDat[6]), rowDat[7], rowDat[8])
+                            animal = StreetAnimal(int(rowDat[0]), rowDat[1],
+                                                  self.strToBool(
+                                                      rowDat[2]), int(rowDat[3]),
+                                                  rowDat[4], rowDat[5], self.strToBool(
+                                                      rowDat[6]),
+                                                  rowDat[7], rowDat[8])
                         # print(animal)
                         dataFiltred.append(animal)
         else:
@@ -78,6 +86,7 @@ class Data(object):
         return dataFiltred
 
     def writeData(self, animalsList):
+        """Metodo que escribe un objeto Animal en el archivo CSV"""
         try:
             with open(self.dataOutPath, 'w') as data:
                 for animal in animalsList:
@@ -88,6 +97,7 @@ class Data(object):
             print(error)
 
     def strToBool(self, value):
+        """Metodo que convierte un str a bool"""
         if value == 'True':
             return True
         else:

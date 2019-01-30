@@ -21,7 +21,7 @@ class V_Main(object):
         self.textReport = StringVar()
         self.textReport.set('Genera un reporte')
         self.animalsList = Treeview(
-            self.root, height=15, columns=('type','domestic', 'gender'), selectmode=BROWSE)
+            self.root, height=15, columns=('type', 'domestic', 'gender'), selectmode=BROWSE)
         self.reportBox = Message(self.root, width=250,
                                  textvariable=self.textReport)
 
@@ -46,7 +46,7 @@ class V_Main(object):
 
     def generateReport(self):
         self.controller.getReport()
-    
+
     def onDoubleClick(self, event):
         animal = self.animalsList.selection()[0]
         valores = self.animalsList.item(animal, "values")
@@ -75,7 +75,8 @@ class WindowNewAnimal(ABC, Toplevel):
         self.btnAceptar = Button(
             self.frameGui, text='Aceptar', command=self.addAnimal)
 
-        self.labelAviso = Label(self.frameGui, textvariable=self.aviso, justify=RIGHT, foreground='red')
+        self.labelAviso = Label(
+            self.frameGui, textvariable=self.aviso, justify=RIGHT, foreground='red')
         self.setGui()
 
     def setGeometry(self, ancho, alto):
@@ -135,7 +136,7 @@ class WindowNewDomesticAnimal(WindowNewAnimal):
         self.entryVaccinations['values'] = ['True', 'False']
         self.entryVaccinations.grid(row=5, column=1)
         # Label Aviso
-        self.labelAviso.grid(row=6, column = 0, columnspan=4, sticky=W+E)
+        self.labelAviso.grid(row=6, column=0, columnspan=4, sticky=W+E)
         # Button Aceptar
         self.btnAceptar.grid(row=7, column=0, columnspan=4, sticky=W+E)
 
@@ -160,7 +161,7 @@ class WindowNewStreetAnimal(WindowNewAnimal):
         Label(self.frameGui, text='Responsable: ').grid(row=4, column=2)
         self.entryFindingName.grid(row=4, column=3, sticky=W+E)
         # Label Aviso
-        self.labelAviso.grid(row=5, column = 0, columnspan=4, sticky=W+E)
+        self.labelAviso.grid(row=5, column=0, columnspan=4, sticky=W+E)
         # Button Aceptar
         self.btnAceptar.grid(row=6, column=0, columnspan=4, sticky=W+E)
 
